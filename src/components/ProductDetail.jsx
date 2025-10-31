@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { cars } from "../data/cars";
-
+// Ở đầu file ProductDetail.jsx, thêm:
+import { Gift, CheckCircle, Phone } from "lucide-react";
 const reviews = [
   {
     name: "Minh Trí",
@@ -19,6 +20,75 @@ const reviews = [
     rating: 5,
   },
 ];
+
+// … bên trong file, đặt trước phần `export default function …` hoặc ngay trên chỗ dùng:
+function PromotionBox({ modelName = "VinFast" }) {
+  const items = [
+    "Giảm trực tiếp 4% vào giá bán xe",
+    "Miễn 100% lệ phí trước bạ",
+    "Giảm 15.000.000 khi có xe xăng đổi xe điện",
+    "Tặng 15.000.000 VNĐ vào tài khoản Vinclub",
+    "Gói phụ kiện chính hãng cao cấp: Film cách nhiệt, Lót sàn, Camera hành trình,...",
+    "Hỗ trợ đăng kí HTX, Xanh SM, Grab, Be,...",
+    "Gói phụ kiện chính hãng cao cấp: Film cách nhiệt, Lót sàn, Camera hành trình,...",
+    "Xe có sẵn, đủ màu, giao ngay cho quý khách hàng",
+    "Miễn phí sạc đến ngày 31/06/2027", // *Lưu ý: tháng 6 thường 30 ngày
+  ];
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 md:p-8 shadow-sm">
+      {/* Dải nổi bật Tháng/Năm */}
+      <div className="absolute -right-10 -top-10 rotate-45 bg-emerald-600 text-white text-xs md:text-sm px-12 py-2 shadow">
+        Tháng 11/2025
+      </div>
+
+      <div className="flex items-start gap-4 mb-4">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+          <Gift size={26} />
+        </div>
+        <div>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-emerald-800">
+            Khuyến mãi {modelName.toUpperCase()} cực hấp dẫn
+          </h3>
+          <p className="text-slate-600 mt-1">
+            Áp dụng riêng cho tháng 11/2025 — số lượng có hạn.
+          </p>
+        </div>
+      </div>
+
+      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mt-4">
+        {items.map((t, i) => (
+          <li
+            key={i}
+            className="flex items-start gap-3 rounded-2xl bg-white/70 border border-emerald-100 p-3"
+          >
+            <CheckCircle className="mt-0.5 text-emerald-600" size={18} />
+            <span className="text-[15px] text-slate-800">{t}</span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Hotline + CTA */}
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <a
+          href="tel:0703711726"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800 hover:bg-slate-50 transition"
+        >
+          <Phone size={18} /> Gọi hotline 0967 034 207
+        </a>
+        <a
+          href="#form"
+          className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-500 transition"
+        >
+          Nhận ưu đãi ngay
+        </a>
+      </div>
+
+      {/* Viền nhấn đẹp */}
+      <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-emerald-600/10" />
+    </div>
+  );
+}
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -71,7 +141,7 @@ export default function ProductDetail() {
           </table>
         </div>
       )}
-
+      <PromotionBox modelName={car.name} />
       {/* Reviews */}
       <div className="space-y-4 animate-scrollFade">
         <h2 className="text-2xl font-bold">Đánh giá từ khách hàng</h2>

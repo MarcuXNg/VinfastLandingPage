@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cars } from "../data/cars"; // 👈 Lấy data từ file cars.js
+import { cars } from "../data/cars";
 
 export default function ModelsGrid() {
   const [current, setCurrent] = useState(0);
@@ -16,18 +16,25 @@ export default function ModelsGrid() {
     return () => clearInterval(auto);
   }, []);
 
-  const c = cars[current]; // Lấy xe hiện tại
+  const c = cars[current];
+  const isSVG = /\.svg$/i.test(c?.img || "");
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
       {/* Ảnh xe */}
-      <div className="relative h-[75vh] flex items-center justify-center">
+      <div className="relative h-[70vh] md:h-[60vh] flex items-center justify-center">
         <img
           src={c.img}
           alt={c.name}
-          className="max-h-[70vh] object-contain transition-all duration-700"
+          className={[
+            // PNG giữ như cũ
+            !isSVG
+              ? "max-h-full w-auto object-contain"
+              : // SVG: phóng to hơn + cao hơn một chút để tương đương PNG
+                "h-[40vh] max-h-full w-auto object-contain scale-[1.12] md:scale-[1.18]",
+            "transition-all duration-700",
+          ].join(" ")}
         />
-
         {/* Tiêu đề xe */}
         <h1 className="absolute top-8 w-full text-center text-[64px] md:text-[96px] font-extrabold text-black">
           {c.name}
@@ -37,22 +44,31 @@ export default function ModelsGrid() {
         <button
           onClick={prevSlide}
           className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 md:p-3 rounded-full shadow-md transition"
+          aria-label="Xe trước"
         >
           <ChevronLeft size={28} />
         </button>
         <button
           onClick={nextSlide}
           className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 md:p-3 rounded-full shadow-md transition"
+          aria-label="Xe sau"
         >
           <ChevronRight size={28} />
         </button>
       </div>
 
-      {/* Bảng thông tin xe (rút từ specs) */}
+      {/* Bảng thông tin xe */}
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 border-t border-slate-200">
-        <div className="grid grid-cols-2 md:grid-cols-4 text-center gap-6 md:gap-10 mb-6">
+        {/* thêm “Số chỗ” => tăng lên 5 cột ở desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-5 text-center gap-6 md:gap-10 mb-6">
           <div>
-            <p className="text-slate-500 text-sm">Dòng xe</p>
+            <p className="text-slate-500 text-sm">Số chỗ</p>
+            <p className="font-semibold text-lg">
+              {c.specs?.["Số chỗ ngồi"] || "—"}
+            </p>
+          </div>
+          <div>
+            <p className="text-slate-500 text-sm">Động cơ</p>
             <p className="font-semibold text-lg">
               {c.specs?.["Động cơ"] || "—"}
             </p>
@@ -81,12 +97,6 @@ export default function ModelsGrid() {
         <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-10">
           <a
             href="#form"
-            className="px-6 py-3 rounded-full bg-black text-white font-semibold hover:bg-slate-800 transition"
-          >
-            Đăng ký lái thử
-          </a>
-          <a
-            href="#form"
             className="px-6 py-3 rounded-full bg-red-600 text-white font-semibold hover:bg-red-500 transition"
           >
             NHẬN NGAY ƯU ĐÃI
@@ -111,6 +121,7 @@ export default function ModelsGrid() {
             className={`w-3 h-3 rounded-full ${
               i === current ? "bg-sky-600" : "bg-slate-300"
             } transition`}
+            aria-label={`Chuyển đến ${cars[i].name}`}
           />
         ))}
       </div>

@@ -5,8 +5,9 @@ export const cars = [
     blurb:
       "Mẫu mini SUV điện hoàn toàn mới, nhỏ gọn cho đô thị, thiết kế trẻ trung và cá tính.",
     price: "Dự kiến: 240 triệu đồng",
-    img: "/vf3.jpg",
+    img: "/ModelVF3.svg",
     specs: {
+      "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
       "Công suất tối đa (kW)": "30",
       "Mô men xoắn cực đại (Nm)": "110",
@@ -21,12 +22,13 @@ export const cars = [
   },
   {
     id: "vf5",
-    name: "VinFast VF 5 Plus",
+    name: "VinFast VF 5",
     blurb:
       "Xe điện phân khúc A với thiết kế hiện đại, phong cách năng động, hướng tới người trẻ.",
     price: "Giá niêm yết: 458 triệu đồng",
-    img: "/vf5.jpg",
+    img: "/ModelVF5.svg",
     specs: {
+      "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
       "Công suất tối đa (kW)": "70",
       "Mô men xoắn cực đại (Nm)": "135",
@@ -45,8 +47,9 @@ export const cars = [
     blurb:
       "SUV điện cỡ B, thiết kế bởi Torino Design, phù hợp di chuyển linh hoạt trong đô thị.",
     price: "Giá dự kiến: 675 triệu đồng",
-    img: "/vf6.jpg",
+    img: "/ModelVF6.svg",
     specs: {
+      "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
       "Công suất tối đa (kW)": "100",
       "Mô men xoắn cực đại (Nm)": "135",
@@ -65,8 +68,9 @@ export const cars = [
     blurb:
       "SUV điện hạng C, phong cách thể thao, nhiều công nghệ hỗ trợ lái thông minh.",
     price: "Giá dự kiến: 850 triệu đồng",
-    img: "/vf7.jpg",
+    img: "/ModelVF7.svg",
     specs: {
+      "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện hoặc Dual Motor (bản Plus)",
       "Công suất tối đa (kW)": "150 – 260",
       "Mô men xoắn cực đại (Nm)": "310 – 500",
@@ -85,8 +89,9 @@ export const cars = [
     blurb:
       "SUV điện cỡ D – 5 chỗ ngồi, trang bị hệ thống hỗ trợ lái nâng cao và công nghệ thông minh VF Connect.",
     price: "Giá niêm yết: 1,090 tỷ đồng",
-    img: "/vf8.jpg",
+    img: "/ModelVF8.svg",
     specs: {
+      "Số chỗ ngồi": "5",
       "Động cơ": "02 Motor điện",
       "Công suất tối đa (kW)": "260",
       "Mô men xoắn cực đại (Nm)": "500",
@@ -105,8 +110,9 @@ export const cars = [
     blurb:
       "SUV điện cỡ E – 7 chỗ ngồi, flagship của VinFast, nội thất sang trọng và phạm vi hoạt động lớn.",
     price: "Giá niêm yết: 1,491 tỷ đồng",
-    img: "/vf9.jpg",
+    img: "/ModelVF9.svg",
     specs: {
+      "Số chỗ ngồi": "7",
       "Động cơ": "02 Motor điện",
       "Công suất tối đa (kW)": "300",
       "Mô men xoắn cực đại (Nm)": "620",
@@ -117,6 +123,36 @@ export const cars = [
       "Kích thước (D x R x C) (mm)": "5.118 x 2.254 x 1.696",
       "Khoảng sáng gầm xe (mm)": "204",
       "Dung lượng pin (kWh)": "92",
+    },
+  },
+  {
+    id: "ecvan",
+    name: "VinFast eCVan",
+    blurb:
+      "Xe van điện linh hoạt cho chở hàng/kinh doanh, tối ưu chi phí vận hành.",
+    price: "Liên hệ",
+    img: "/ModelECVAN.svg",
+    specs: {
+      // Ghi chú: số chỗ giả định. Boss có thể đổi tùy phiên bản.
+      "Số chỗ ngồi": "2",
+      "Động cơ": "Motor điện",
+      "Dẫn động": "FWD",
+      "Dung lượng pin (kWh)": "—",
+    },
+  },
+  {
+    id: "limogreen",
+    name: "VinFast LimoGreen",
+    blurb:
+      "Dòng xe điện cao cấp cấu hình limousine cho doanh nhân/đón tiếp VIP.",
+    price: "Liên hệ",
+    img: "/ModelLimoGreen.png",
+    specs: {
+      // Ghi chú: số chỗ giả định. Boss có thể đổi 6–7 theo layout.
+      "Số chỗ ngồi": "6",
+      "Động cơ": "Motor điện",
+      "Dẫn động": "AWD",
+      "Dung lượng pin (kWh)": "—",
     },
   },
 ];
