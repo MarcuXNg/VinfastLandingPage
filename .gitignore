@@ -1,23 +1,68 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# --- Node / package managers ---
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# --- Build outputs ---
+dist/
+build/
+*.local
+*.cache
 
-# testing
-/coverage
+# Vite cache
+.vite/
+# (các tool khác có thể tạo cache)
+.cache/
+.parcel-cache/
 
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# --- Logs ---
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Env & secrets (đừng commit secrets) ---
+.env
+.env.*
+!.env.example   # giữ file mẫu
+
+# --- Test / Coverage ---
+coverage/
+*.lcov
+
+# --- Editors / IDE ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.iml
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Tooling / Hosting ---
+.vercel/
+.netlify/
+.firebase/
+.sentryclirc
+
+# --- Storybook / Playwright (nếu dùng) ---
+storybook-static/
+.playwright/
+test-results/
+
+# --- Misc ---
+.eslintcache
+.stylelintcache
+tsbuildinfo.tsbuildinfo
+*.tsbuildinfo

@@ -1,6 +1,8 @@
+import React from "react";
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { cars } from "../data/cars";
+import Form from "../components/Form";
 // Ở đầu file ProductDetail.jsx, thêm:
 import { Gift, CheckCircle, Phone } from "lucide-react";
 const reviews = [
@@ -37,11 +39,6 @@ function PromotionBox({ modelName = "VinFast" }) {
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 md:p-8 shadow-sm">
-      {/* Dải nổi bật Tháng/Năm */}
-      <div className="absolute -right-10 -top-10 rotate-45 bg-emerald-600 text-white text-xs md:text-sm px-12 py-2 shadow">
-        Tháng 11/2025
-      </div>
-
       <div className="flex items-start gap-4 mb-4">
         <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
           <Gift size={26} />
@@ -102,14 +99,22 @@ export default function ProductDetail() {
     return <p className="text-center mt-10">Không tìm thấy sản phẩm.</p>;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Hình ảnh sản phẩm */}
       <div className="animate-fadeIn">
-        <img
-          src={car.img}
-          alt={car.name}
-          className="w-full rounded-3xl shadow-lg object-cover"
-        />
+        <div className="relative overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5">
+          <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-slate-100">
+            <img
+              src={car.product_img}
+              alt={car.name}
+              className="
+              w-full h-full object-cover
+            "
+            />
+          </div>
+          {/* viền nhấn nhẹ */}
+          <div className="pointer-events-none absolute inset-0 ring-1 ring-white/10" />
+        </div>
       </div>
 
       {/* Thông tin chính */}
@@ -142,6 +147,7 @@ export default function ProductDetail() {
         </div>
       )}
       <PromotionBox modelName={car.name} />
+      <Form />
       {/* Reviews */}
       <div className="space-y-4 animate-scrollFade">
         <h2 className="text-2xl font-bold">Đánh giá từ khách hàng</h2>

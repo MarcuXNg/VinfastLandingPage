@@ -1,7 +1,8 @@
 // src/components/header.jsx
+import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { cars } from "../data/cars";
 
 const slugOf = (c) =>
@@ -16,10 +17,13 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileCarsOpen, setMobileCarsOpen] = useState(false);
   const wrapRef = useRef(null);
-  const navigate = useNavigate();
 
-  const group1 = cars.filter((c) => /vf3|vf5|vf6/i.test(slugOf(c)));
-  const group2 = cars.filter((c) => /vf7|vf8|vf9/i.test(slugOf(c)));
+  // const group1 = cars.filter((c) => /vf3|vf5|vf6/i.test(slugOf(c)));
+  // const group2 = cars.filter((c) => /vf7|vf8|vf9/i.test(slugOf(c)));
+  const EV_CONSUMER = ["vf3", "vf5", "vf6", "vf7", "vf8", "vf9"];
+  const EV_BUSINESS = ["ecvan", "limogreen"];
+  const evConsumer = cars.filter((c) => EV_CONSUMER.includes(slugOf(c)));
+  const evBusiness = cars.filter((c) => EV_BUSINESS.includes(slugOf(c)));
 
   // Đóng dropdown khi click ra ngoài (desktop)
   useEffect(() => {
@@ -85,10 +89,14 @@ export default function Header() {
             {showDropdown && (
               <div
                 id="cars-menu"
-                className="absolute top-full left-0 mt-2 w-60 rounded-xl bg-white border border-slate-200 shadow-lg py-2 animate-fadeIn"
+                className="absolute top-full left-0 mt-2 w-72 rounded-xl bg-white border border-slate-200 shadow-lg py-2 animate-fadeIn"
                 // không còn hover handler — chỉ đóng khi click ngoài, Esc, hoặc chọn link
               >
-                {group1.map((c) => (
+                {/* Nhóm: DÒNG XE ĐIỆN */}
+                <div className="px-4 pb-1 text-[11px] font-bold tracking-wide text-slate-500">
+                  DÒNG XE ĐIỆN
+                </div>
+                {evConsumer.map((c) => (
                   <Link
                     key={slugOf(c)}
                     to={`/product/${slugOf(c)}`}
@@ -99,7 +107,11 @@ export default function Header() {
                   </Link>
                 ))}
                 <div className="my-2 h-px bg-slate-200" />
-                {group2.map((c) => (
+                {/* Nhóm: DÒNG XE ĐIỆN KINH DOANH */}
+                <div className="px-4 pb-1 text-[11px] font-bold tracking-wide text-slate-500">
+                  DÒNG XE ĐIỆN KINH DOANH
+                </div>
+                {evBusiness.map((c) => (
                   <Link
                     key={slugOf(c)}
                     to={`/product/${slugOf(c)}`}
@@ -113,9 +125,9 @@ export default function Header() {
             )}
           </div>
 
-          <a href="#installment" className="hover:text-sky-700 transition">
+          {/* <a href="#installment" className="hover:text-sky-700 transition">
             Mua xe trả góp
-          </a>
+          </a> */}
         </nav>
 
         {/* CTA (desktop) */}
@@ -178,17 +190,31 @@ export default function Header() {
               mobileCarsOpen ? "max-h-96" : "max-h-0"
             }`}
           >
-            {[...group1, ...group2].map((c) => (
-              <button
+            <div className="px-2 pt-1 pb-2 text-[11px] font-bold tracking-wide text-slate-500">
+              DÒNG XE ĐIỆN
+            </div>
+            {evConsumer.map((c) => (
+              <Link
                 key={slugOf(c)}
-                onClick={() => {
-                  setMobileOpen(false);
-                  navigate(`/product/${slugOf(c)}`);
-                }}
+                to={`/product/${slugOf(c)}`}
+                onClick={() => setMobileOpen(false)}
+                className="block w-full text-left px-2 py-2 rounded hover:bg-slate-100"
+              >
+                {c.name}{" "}
+              </Link>
+            ))}
+            <div className="px-2 pt-3 pb-2 text-[11px] font-bold tracking-wide text-slate-500">
+              DÒNG XE ĐIỆN KINH DOANH
+            </div>
+            {evBusiness.map((c) => (
+              <Link
+                key={slugOf(c)}
+                to={`/product/${slugOf(c)}`}
+                onClick={() => setMobileOpen(false)}
                 className="block w-full text-left px-2 py-2 rounded hover:bg-slate-100"
               >
                 {c.name}
-              </button>
+              </Link>
             ))}
           </div>
 

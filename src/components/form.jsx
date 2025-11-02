@@ -1,92 +1,79 @@
-import { useMemo, useState } from "react";
-import { isPhone, isEmail } from "../lib/validators";
-import { submitLead } from "../lib/api";
+import React, { useMemo, useState } from "react";
+import { isPhone, isEmail } from "../shared/lib/validators";
+import { cars } from "../data/cars";
+const Sheet_URL = import.meta.env.VITE_SHEET_URL ?? "";
 
-export default function Form({
-  defaultModel = "EI13_2024",
-  campaign = "Popup T10/2025",
-}) {
+export default function Form({ defaultModel = "vf3" }) {
+  // Lấy options loại xe từ data
+  const carOptions = useMemo(
+    () =>
+      cars.map((c) => ({
+        id: c.id,
+        label: c.name.replace(/^VinFast\s/i, ""), // hiển thị VF3, VF6...
+      })),
+    []
+  );
+
   const [form, setForm] = useState({
-    lastName: "",
+    fullName: "",
     phone: "",
     email: "",
-    consent_data_tnc: "OPT_OUT", // hidden thực tế gửi
-    consent_data_tnc_shadow: false, // checkbox hiển thị
-    title: "Footer - Popup Website lead Nhận tư vấn",
-    description: "Footer - Popup Website lead Nhận tư vấn",
-    targetOwner: "VinFast TeleSales",
-    campaign,
+    location: "",
     model: defaultModel,
-    lead_source: "Đăng ký tư vấn",
-    utmParams: "",
   });
 
   const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState("");
-
-  // Lấy UTM từ URL 1 lần
-  const utmFromURL = useMemo(() => window.location.search.slice(1), []);
-  useMemo(() => {
-    if (utmFromURL) setForm((s) => ({ ...s, utmParams: utmFromURL }));
-  }, [utmFromURL]);
+  const URL = Sheet_URL;
 
   const onChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((s) => ({ ...s, [name]: type === "checkbox" ? checked : value }));
-    if (name === "consent_data_tnc_shadow") {
-      setForm((s) => ({
-        ...s,
-        consent_data_tnc: checked ? "OPT_IN" : "OPT_OUT",
-      }));
-    }
+    const { name, value } = e.target;
+    setForm((s) => ({ ...s, [name]: value }));
   };
 
   const valid =
-    form.lastName.trim().length >= 2 &&
+    form.fullName.trim().length >= 2 &&
     isPhone(form.phone) &&
     isEmail(form.email) &&
-    form.consent_data_tnc_shadow;
+    form.location.trim().length >= 2 &&
+    form.model;
 
   const submit = async (e) => {
     e.preventDefault();
+    console.log("SUBMIT CLICKED", { form, valid });
     setNote("");
     if (!valid) {
       setNote("Vui lòng điền đủ & hợp lệ các trường bắt buộc.");
       return;
     }
+
     try {
       setSubmitting(true);
-      const payload = {
-        title: form.title,
-        description: form.description,
-        targetOwner: form.targetOwner,
-        campaign: form.campaign,
+
+      const payload = new URLSearchParams({
+        name: form.fullName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
         model: form.model,
-        utmParams: form.utmParams,
-        lead_source: form.lead_source,
+        location: form.location.trim(),
+      }).toString();
 
-        lastName: form.lastName,
-        phone: form.phone,
-        email: form.email,
+      await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: payload,
+      });
 
-        consent_source: "LeadForm",
-        consent_form_key: "null",
-        consent_identifier: "",
-        consent_data_tnc: form.consent_data_tnc,
-      };
-
-      await submitLead(payload);
-      // Nếu endpoint có thankpage riêng, có thể redirect:
-      // window.location.href = "/vn_vi/oto-dien-vinfast/thank-you-page-lead-oto.html";
       setNote("Gửi thành công! Chúng tôi sẽ liên hệ sớm.");
-      setForm((s) => ({
-        ...s,
-        lastName: "",
+      setForm({
+        fullName: "",
         phone: "",
         email: "",
-        consent_data_tnc_shadow: false,
-        consent_data_tnc: "OPT_OUT",
-      }));
+        location: "",
+        model: defaultModel,
+      });
     } catch (err) {
       console.error(err);
       setNote("Gửi thất bại. Vui lòng thử lại sau.");
@@ -101,8 +88,7 @@ export default function Form({
         <div className="max-w-xl mx-auto text-center">
           <p className="text-3xl font-extrabold">Đăng ký tư vấn</p>
           <p className="text-slate-600 mt-2">
-            Đăng ký ngay hôm nay để nhận thông tin chính thức và tư vấn từ
-            VinFast
+            Điền thông tin để được tư vấn nhanh.
           </p>
         </div>
 
@@ -117,54 +103,45 @@ export default function Form({
               Họ và tên (*)
             </label>
             <input
-              className="w-full h-12 px-4 rounded-xl bg-white
-                  border border-slate-200 shadow-sm
-                  outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-              name="lastName"
+              className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              name="fullName"
               type="text"
               minLength={2}
               maxLength={80}
               placeholder="Nguyễn Văn A"
-              value={form.lastName}
+              value={form.fullName}
               onChange={onChange}
               required
             />
           </div>
 
-          {/* Điện thoại */}
+          {/* Số điện thoại */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">
               Số điện thoại (*)
             </label>
             <input
-              className="w-full h-12 px-4 rounded-xl bg-white
-                  border border-slate-200 shadow-sm
-                  outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               name="phone"
               type="tel"
               inputMode="numeric"
-              pattern="^\+?\d{9,12}$"
+              pattern="^\\+?\\d{9,12}$"
               maxLength={12}
               placeholder="09xxxxxxxx hoặc +849xxxxxxxx"
               value={form.phone}
               onChange={onChange}
               required
             />
-            {/* <p className="text-xs text-slate-500 mt-1">
-              9–12 số, có thể có dấu + ở đầu.
-            </p> */}
           </div>
 
           {/* Email */}
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Email (*)</label>
             <input
-              className="w-full h-12 px-4 rounded-xl bg-white
-                  border border-slate-200 shadow-sm
-                  outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
               name="email"
               type="email"
-              maxLength={40}
+              maxLength={60}
               placeholder="ten@gmail.com"
               value={form.email}
               onChange={onChange}
@@ -172,31 +149,43 @@ export default function Form({
             />
           </div>
 
-          {/* Consent */}
+          {/* Nơi sống */}
           <div className="mb-3">
-            <label className="flex items-start gap-3 text-sm">
-              <input
-                className="mt-1 w-4 h-4"
-                type="checkbox"
-                name="consent_data_tnc_shadow"
-                checked={form.consent_data_tnc_shadow}
-                onChange={onChange}
-              />
-              <span>
-                Tôi đồng ý cho phép VinFast xử lý dữ liệu cá nhân theo{" "}
-                <a
-                  className="text-sky-600 underline"
-                  href="https://vinfastauto.com/vn_vi/privacy-policy"
-                  target="_blank"
-                >
-                  Chính sách Bảo vệ Dữ liệu cá nhân
-                </a>
-                .
-              </span>
+            <label className="block text-sm font-medium mb-1">
+              Nơi sống (*)
             </label>
+            <input
+              className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+              name="location"
+              type="text"
+              maxLength={80}
+              placeholder="Quận/Huyện, Tỉnh/Thành (VD: Tân Uyên, Bình Dương)"
+              value={form.location}
+              onChange={onChange}
+              required
+            />
           </div>
 
-          {/* Thông báo */}
+          {/* Loại xe */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">
+              Loại xe quan tâm (*)
+            </label>
+            <select
+              name="model"
+              value={form.model}
+              onChange={onChange}
+              className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+            >
+              {carOptions.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.label.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Thông báo trạng thái */}
           {note && (
             <div className="mb-3 rounded-xl px-3 py-2 bg-amber-50 text-amber-800 text-sm border border-amber-200">
               {note}

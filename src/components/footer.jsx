@@ -1,18 +1,33 @@
+// src/components/Footer.jsx
+import React from "react";
+import { Link } from "react-router-dom";
+import { cars } from "../data/cars";
+
+const slugOf = (c) =>
+  (c.id || c.name || "")
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[^a-z0-9-]/g, "");
+
+// Nhóm xe: VF* và các dòng khác (ecvan, limogreen)
+const vfSeries = cars.filter((c) => /^vf\d+$/i.test(c.id));
+const otherSeries = cars.filter((c) => !/^vf\d+$/i.test(c.id));
+
 export default function Footer() {
   return (
     <footer
       className="
-    bg-[#121212] text-slate-300
-    [&_a:hover]:underline          /* gạch chân khi hover mọi <a> bên trong */
-    [&_a]:underline-offset-2      /* khoảng cách gạch chân dễ đọc */
-    [&_a]:decoration-slate-400/60 /* màu gạch mặc định */
-    [&_a:hover]:decoration-white  /* khi hover đổi theo màu chữ */
-  "
+        bg-[#121212] text-slate-300
+        [&_a:hover]:underline
+        [&_a]:underline-offset-2
+        [&_a]:decoration-slate-400/60
+        [&_a:hover]:decoration-white
+      "
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Grid 4 cột: 1 cột lớn + 3 cột link */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Cột liên hệ (to) */}
+          {/* Cột liên hệ */}
           <div className="md:col-span-2">
             <img
               src="/logo.svg"
@@ -33,14 +48,14 @@ export default function Footer() {
               </p>
               <p>
                 <span className="text-slate-400">Hotline: </span>
-                <a href="tel:070371196" className="hover:text-white">
+                <a href="tel:0967034207" className="hover:text-white">
                   0967 034 207
                 </a>
               </p>
               <p>
                 <span className="text-slate-400">Email: </span>
                 <a
-                  href="mailto:trituan.vinfastchevrolet@gmail.com"
+                  href="mailto:maiquocthien0810@gmail.com"
                   className="hover:text-white break-all"
                 >
                   maiquocthien0810@gmail.com
@@ -49,54 +64,64 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Cột 1 */}
+          {/* Cột VF series */}
           <div>
             <h4 className="text-slate-400 mb-4">Động cơ điện</h4>
             <ul className="space-y-3">
-              {["VF9", "VF8", "VF7", "VF6", "VF5", "VF3"].map((m) => (
-                <li key={m}>
-                  <a href="#" className="hover:text-white transition">
-                    {m}
-                  </a>
-                </li>
-              ))}
+              {vfSeries
+                // Sắp xếp VF9 → VF3 (giảm dần theo số)
+                .sort(
+                  (a, b) =>
+                    Number(b.id.replace("vf", "")) -
+                    Number(a.id.replace("vf", ""))
+                )
+                .map((c) => (
+                  <li key={c.id}>
+                    <Link
+                      to={`/product/${slugOf(c)}`}
+                      className="hover:text-white transition"
+                    >
+                      {
+                        c.name.replace(
+                          /^VinFast\s/i,
+                          ""
+                        ) /* Hiển thị VF9, VF8,... */
+                      }
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
 
-          {/* Cột 2 */}
+          {/* Cột dòng khác (eCVan, LimoGreen, …) */}
           <div>
             <h4 className="text-slate-400 mb-4">Dòng xe điện</h4>
             <ul className="space-y-3">
-              {["EC Van", "Limo Green"].map((t) => (
-                <li key={t}>
-                  <a
-                    href="/product/limogreen"
+              {otherSeries.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    to={`/product/${slugOf(c)}`}
                     className="hover:text-white transition"
                   >
-                    {t}
-                  </a>
+                    {c.name.replace(/^VinFast\s/i, "")}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Cột 3 */}
+          {/* Cột điều hướng khác */}
           <div className="md:col-start-4">
             <h4 className="text-slate-400 mb-4">Tìm hiểu thêm</h4>
             <ul className="space-y-3">
               <li>
-                <a href="/" className="hover:text-white transition">
+                <Link to="/" className="hover:text-white transition">
                   Trang chủ
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition">
                   Tin tức
-                </a>
-              </li>
-              <li>
-                <a href="#models" className="hover:text-white transition">
-                  Mua xe trả góp
                 </a>
               </li>
             </ul>

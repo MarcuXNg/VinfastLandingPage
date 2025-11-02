@@ -6,6 +6,9 @@ export const cars = [
       "Mẫu mini SUV điện hoàn toàn mới, nhỏ gọn cho đô thị, thiết kế trẻ trung và cá tính.",
     price: "Dự kiến: 240 triệu đồng",
     img: "/ModelVF3.svg",
+    product_img: "/vf3.jpg",
+    title: "VF 3 – Nhỏ gọn, linh hoạt, năng lượng xanh",
+    desc: "Xe điện đô thị cỡ nhỏ, thiết kế trẻ trung, di chuyển dễ dàng trong phố.",
     specs: {
       "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
@@ -27,6 +30,9 @@ export const cars = [
       "Xe điện phân khúc A với thiết kế hiện đại, phong cách năng động, hướng tới người trẻ.",
     price: "Giá niêm yết: 458 triệu đồng",
     img: "/ModelVF5.svg",
+    product_img: "/vf5.jpg",
+    title: "VF 5 – Phong cách và tiện nghi",
+    desc: "Mẫu xe điện phân khúc A hiện đại, năng động, dành cho giới trẻ.",
     specs: {
       "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
@@ -48,6 +54,9 @@ export const cars = [
       "SUV điện cỡ B, thiết kế bởi Torino Design, phù hợp di chuyển linh hoạt trong đô thị.",
     price: "Giá dự kiến: 675 triệu đồng",
     img: "/ModelVF6.svg",
+    product_img: "/vf6.jpg",
+    title: "VF 6 – SUV điện tầm trung, mạnh mẽ và thông minh",
+    desc: "Công nghệ tiên tiến, thiết kế tinh tế, tối ưu cho đô thị hiện đại.",
     specs: {
       "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện",
@@ -69,6 +78,9 @@ export const cars = [
       "SUV điện hạng C, phong cách thể thao, nhiều công nghệ hỗ trợ lái thông minh.",
     price: "Giá dự kiến: 850 triệu đồng",
     img: "/ModelVF7.svg",
+    product_img: "/vf7.jpg",
+    title: "VF 7 – Cá tính, thể thao và đẳng cấp",
+    desc: "Trải nghiệm lái phấn khích với thiết kế đậm chất tương lai.",
     specs: {
       "Số chỗ ngồi": "5",
       "Động cơ": "01 Motor điện hoặc Dual Motor (bản Plus)",
@@ -90,6 +102,9 @@ export const cars = [
       "SUV điện cỡ D – 5 chỗ ngồi, trang bị hệ thống hỗ trợ lái nâng cao và công nghệ thông minh VF Connect.",
     price: "Giá niêm yết: 1,090 tỷ đồng",
     img: "/ModelVF8.svg",
+    product_img: "/vf8.jpg",
+    title: "VF 8 – SUV điện sang trọng và thông minh",
+    desc: "Hiệu suất mạnh mẽ, công nghệ tiên tiến, tiện nghi toàn diện.",
     specs: {
       "Số chỗ ngồi": "5",
       "Động cơ": "02 Motor điện",
@@ -111,6 +126,9 @@ export const cars = [
       "SUV điện cỡ E – 7 chỗ ngồi, flagship của VinFast, nội thất sang trọng và phạm vi hoạt động lớn.",
     price: "Giá niêm yết: 1,491 tỷ đồng",
     img: "/ModelVF9.svg",
+    product_img: "/vf9.jpg",
+    title: "VF 9 – SUV 7 chỗ đẳng cấp quốc tế",
+    desc: "Không gian rộng rãi, an toàn vượt trội, phù hợp cho gia đình và doanh nghiệp.",
     specs: {
       "Số chỗ ngồi": "7",
       "Động cơ": "02 Motor điện",
@@ -127,11 +145,14 @@ export const cars = [
   },
   {
     id: "ecvan",
-    name: "VinFast eCVan",
+    name: "VinFast ECVan",
     blurb:
       "Xe van điện linh hoạt cho chở hàng/kinh doanh, tối ưu chi phí vận hành.",
     price: "Liên hệ",
     img: "/ModelECVAN.svg",
+    product_img: "/ecvan.jpg",
+    title: "ECVan – Giải pháp vận tải xanh cho doanh nghiệp",
+    desc: "Xe van điện tiết kiệm, bền bỉ, phù hợp cho kinh doanh và giao nhận hàng hóa.",
     specs: {
       // Ghi chú: số chỗ giả định. Boss có thể đổi tùy phiên bản.
       "Số chỗ ngồi": "2",
@@ -147,6 +168,9 @@ export const cars = [
       "Dòng xe điện cao cấp cấu hình limousine cho doanh nhân/đón tiếp VIP.",
     price: "Liên hệ",
     img: "/ModelLimoGreen.png",
+    product_img: "/limogreen.jpg",
+    title: "LimoGreen – Đẳng cấp xe điện limousine",
+    desc: "Trải nghiệm sang trọng, tiện nghi cao cấp trên nền tảng xe điện hiện đại.",
     specs: {
       // Ghi chú: số chỗ giả định. Boss có thể đổi 6–7 theo layout.
       "Số chỗ ngồi": "6",

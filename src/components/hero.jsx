@@ -1,58 +1,65 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cars } from "../data/cars";
 
-const slides = [
-  {
-    id: 1,
-    title: "VF 3 – Nhỏ gọn, linh hoạt, năng lượng xanh",
-    desc: "Xe điện đô thị cỡ nhỏ, thiết kế trẻ trung, di chuyển dễ dàng trong phố.",
-    img: "/vf3.jpg",
-  },
-  {
-    id: 2,
-    title: "VF 5 Plus – Phong cách và tiện nghi",
-    desc: "Mẫu xe điện phân khúc A hiện đại, năng động, dành cho giới trẻ.",
-    img: "/vf5.jpg",
-  },
-  {
-    id: 3,
-    title: "VF 6 – SUV điện tầm trung, mạnh mẽ và thông minh",
-    desc: "Công nghệ tiên tiến, thiết kế tinh tế, tối ưu cho đô thị hiện đại.",
-    img: "/vf6.jpg",
-  },
-  {
-    id: 4,
-    title: "VF 7 – Cá tính, thể thao và đẳng cấp",
-    desc: "Trải nghiệm lái phấn khích với thiết kế đậm chất tương lai.",
-    img: "/vf7.jpg",
-  },
-  {
-    id: 5,
-    title: "VF 8 – SUV điện sang trọng và thông minh",
-    desc: "Hiệu suất mạnh mẽ, công nghệ tiên tiến, tiện nghi toàn diện.",
-    img: "/vf8.jpg",
-  },
-  {
-    id: 6,
-    title: "VF 9 – SUV 7 chỗ đẳng cấp quốc tế",
-    desc: "Không gian rộng rãi, an toàn vượt trội, phù hợp cho gia đình và doanh nghiệp.",
-    img: "/vf9.jpg",
-  },
-];
+// Ảnh hero từ assets (được bundler hash/tối ưu)
+import vf3 from "../assets/vf3/vf3_1.jpg";
+import vf5 from "../assets/vf5/vf5_1.jpg";
+import vf6 from "../assets/vf6/vf6_1.jpg";
+import vf7 from "../assets/vf7/vf7_1.jpg";
+import vf8 from "../assets/vf8/vf8_1.jpg";
+import vf9 from "../assets/vf9/vf9_1.jpg";
+import ecvan from "../assets/ecvan/ecvan_1.jpg";
+import limogreen from "../assets/limogreen/limogreen_1.jpg";
+
+// Map id -> ảnh hero trong assets
+const heroImgById = {
+  vf3,
+  vf5,
+  vf6,
+  vf7,
+  vf8,
+  vf9,
+  ecvan,
+  limogreen,
+};
+
+// Nếu thiếu ảnh hero cho một id nào đó
+const FALLBACK_HERO =
+  "data:image/svg+xml;charset=utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'>
+      <rect width='100%' height='100%' fill='#0f172a'/>
+      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='white' font-size='28' font-family='sans-serif'>No hero image</text>
+    </svg>`
+  );
+
+// Build slides trực tiếp từ data
+const slidesFromData = cars.map((c, i) => ({
+  id: i + 1,
+  title: c.title || c.name,
+  desc: c.desc || c.blurb,
+  // ảnh hero lấy từ assets (ưu tiên đúng id). Nếu không có -> fallback
+  img: heroImgById[c.id] || FALLBACK_HERO,
+}));
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
 
   const nextSlide = () =>
-    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setCurrent((prev) => (prev === slidesFromData.length - 1 ? 0 : prev + 1));
   const prevSlide = () =>
-    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setCurrent((prev) => (prev === 0 ? slidesFromData.length - 1 : prev - 1));
 
   // Auto slide mỗi 6 giây
   useEffect(() => {
     const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
   }, []);
+
+  const slides = slidesFromData; // alias cho dễ đọc
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
