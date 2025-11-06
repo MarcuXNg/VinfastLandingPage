@@ -11,6 +11,9 @@ import BanGiaoXe from "../../components/BanGiaoXe";
 import Form from "../../components/Form";
 import ProductDetail from "../../pages/ProductDetail";
 
+import RouteErrorBoundary from "../error/RouteErrorBoundary.jsx";
+import NotFound from "../../pages/NotFound.jsx";
+
 // import Login from "../../features/auth/components/Login.jsx";
 // import Protected from "../../features/auth/api/Protected";
 // import Admin from "../../features/auth/components/Admin.jsx";
@@ -18,6 +21,7 @@ import ProductDetail from "../../pages/ProductDetail";
 const router = createBrowserRouter([
   {
     element: <AppShell />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         path: "/",
@@ -47,6 +51,8 @@ const router = createBrowserRouter([
       //     </Protected>
       //   ),
       // },
+
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
