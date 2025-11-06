@@ -40,7 +40,7 @@ export default function Form({ defaultModel = "vf3" }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    console.log("SUBMIT CLICKED", { form, valid });
+    // console.log("SUBMIT CLICKED", { form, valid });
     setNote("");
     if (!valid) {
       setNote("Vui lòng điền đủ & hợp lệ các trường bắt buộc.");
@@ -60,6 +60,7 @@ export default function Form({ defaultModel = "vf3" }) {
 
       await fetch(URL, {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
         },
