@@ -1,5 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
+// src/components/ModelsGrid.jsx
+import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cars } from "../data/cars";
@@ -22,26 +22,31 @@ export default function ModelsGrid() {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      {/* Ảnh xe */}
+      {/* Ảnh xe (CLICKABLE) */}
       <div className="relative h-[70vh] md:h-[60vh] flex items-center justify-center">
-        <img
-          src={c.img}
-          alt={c.name}
-          className={[
-            // PNG giữ như cũ
-            !isSVG
-              ? "max-h-full w-auto object-contain"
-              : // SVG: phóng to hơn + cao hơn một chút để tương đương PNG
-                "h-[40vh] max-h-full w-auto object-contain scale-[1.12] md:scale-[1.18]",
-            "transition-all duration-700",
-          ].join(" ")}
-        />
+        <Link
+          to={`/product/${c.id}`}
+          aria-label={`Xem chi tiết ${c.name}`}
+          className="block"
+        >
+          <img
+            src={c.img}
+            alt={c.name}
+            className={[
+              !isSVG
+                ? "max-h-full w-auto object-contain"
+                : "h-[40vh] max-h-full w-auto object-contain scale-[1.12] md:scale-[1.18]",
+              "transition-all duration-700 cursor-pointer",
+            ].join(" ")}
+          />
+        </Link>
+
         {/* Tiêu đề xe */}
         <h1 className="absolute top-8 w-full text-center text-[64px] md:text-[96px] font-extrabold text-black">
           {c.name}
         </h1>
 
-        {/* Mũi tên điều hướng */}
+        {/* Mũi tên điều hướng (KHÔNG nằm trong Link) */}
         <button
           onClick={prevSlide}
           className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 md:p-3 rounded-full shadow-md transition"
@@ -60,7 +65,6 @@ export default function ModelsGrid() {
 
       {/* Bảng thông tin xe */}
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 border-t border-slate-200">
-        {/* thêm “Số chỗ” => tăng lên 5 cột ở desktop */}
         <div className="grid grid-cols-2 md:grid-cols-5 text-center gap-6 md:gap-10 mb-6">
           <div>
             <p className="text-slate-500 text-sm">Số chỗ</p>
@@ -103,9 +107,7 @@ export default function ModelsGrid() {
             NHẬN NGAY ƯU ĐÃI
           </a>
           <Link
-            to={`/product/${(c.id || c.name)
-              .toLowerCase()
-              .replace(/\s+/g, "")}`}
+            to={`/product/${c.id}`}
             className="px-6 py-3 rounded-full bg-white text-black border border-slate-300 font-semibold hover:bg-slate-100 transition"
           >
             Xem chi tiết

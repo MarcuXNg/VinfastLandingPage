@@ -10,6 +10,7 @@ import ModelsGrid from "../../components/ModelsGrid";
 import BanGiaoXe from "../../components/BanGiaoXe";
 import Form from "../../components/Form";
 import ProductDetail from "../../pages/ProductDetail";
+import CatalogGrid from "../../components/CatalogGrid";
 
 import RouteErrorBoundary from "../error/RouteErrorBoundary.jsx";
 import NotFound from "../../pages/NotFound.jsx";
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
             />
             <Hero />
             <ModelsGrid />
+            <CatalogGrid />
             <BanGiaoXe />
             <Form />
           </>

@@ -1,10 +1,9 @@
-import React from "react";
-import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { cars } from "../data/cars";
 import Form from "../components/Form";
-// Ở đầu file ProductDetail.jsx, thêm:
 import { Gift, CheckCircle, Phone } from "lucide-react";
+
 const reviews = [
   {
     name: "Minh Trí",
@@ -89,14 +88,69 @@ function PromotionBox({ modelName = "VinFast" }) {
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const car = cars.find((c) => c.id === id);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const car = useMemo(() => cars.find((c) => c.id === id), [id]);
+  const variantFromURL = (searchParams.get("v") || "").toLowerCase();
+
+  const variantKeys = useMemo(
+    () => (car?.variants ? Object.keys(car.variants) : []),
+    [car]
+  );
+
+  const defaultVariantKey = useMemo(() => {
+    // Ưu tiên key trong URL nếu hợp lệ, không thì lấy key đầu tiên
+    if (variantFromURL && variantKeys.includes(variantFromURL))
+      return variantFromURL;
+    return variantKeys[0] || null;
+  }, [variantFromURL, variantKeys]);
+
+  const [selectedVariantKey, setSelectedVariantKey] =
+    useState(defaultVariantKey);
 
   useEffect(() => {
+    // Khi đổi model id, reset variant theo URL mới
+    setSelectedVariantKey(defaultVariantKey || null);
+    // scroll top
     window.scrollTo({ top: 0, behavior: "smooth" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    // Khi Boss đổi biến thể bằng nút, đồng bộ lại URL ?v=
+    if (!car?.variants) return;
+    const current = searchParams.get("v") || "";
+    if (selectedVariantKey && current !== selectedVariantKey) {
+      searchParams.set("v", selectedVariantKey);
+      setSearchParams(searchParams, { replace: true });
+    }
+    if (!selectedVariantKey && current) {
+      searchParams.delete("v");
+      setSearchParams(searchParams, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedVariantKey, car]);
 
   if (!car)
     return <p className="text-center mt-10">Không tìm thấy sản phẩm.</p>;
+
+  const selectedVariant =
+    selectedVariantKey && car.variants
+      ? car.variants[selectedVariantKey]
+      : null;
+
+  // Giá hiển thị: ưu tiên giá biến thể -> giá gốc
+  const displayPrice = selectedVariant?.price || car.price;
+
+  // Ảnh hiển thị: ưu tiên ảnh biến thể -> ảnh gốc
+  const displayImage = selectedVariant?.product_img || car.product_img;
+
+  // Specs hiển thị: merge base specs + override từ biến thể (nếu có)
+  const mergedSpecs = useMemo(() => {
+    if (!car.specs) return null;
+    if (!selectedVariant?.specs) return car.specs;
+    return { ...car.specs, ...selectedVariant.specs };
+  }, [car, selectedVariant]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
@@ -105,33 +159,62 @@ export default function ProductDetail() {
         <div className="relative overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5">
           <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-slate-100">
             <img
-              src={car.product_img}
+              src={displayImage}
               alt={car.name}
-              className="
-              w-full h-full object-cover
-            "
+              className="w-full h-full object-cover"
             />
           </div>
-          {/* viền nhấn nhẹ */}
           <div className="pointer-events-none absolute inset-0 ring-1 ring-white/10" />
         </div>
       </div>
 
       {/* Thông tin chính */}
       <div className="space-y-3 animate-scrollFade">
-        <h1 className="text-4xl font-extrabold">{car.name}</h1>
+        <h1 className="text-4xl font-extrabold">
+          {car.name}
+          {selectedVariant ? (
+            <span className="ml-2 text-xl font-semibold text-slate-500">
+              · {selectedVariant.label}
+            </span>
+          ) : null}
+        </h1>
         <p className="text-lg text-slate-700">{car.blurb}</p>
-        <p className="text-2xl font-semibold text-sky-700">{car.price}</p>
+
+        {/* ⬇️ Nút chọn biến thể (nếu có) */}
+        {variantKeys.length > 0 && (
+          <div className="flex flex-wrap gap-2 pt-2">
+            {variantKeys.map((k) => {
+              const v = car.variants[k];
+              const active = selectedVariantKey === k;
+              return (
+                <button
+                  key={k}
+                  onClick={() => setSelectedVariantKey(k)}
+                  className={[
+                    "px-4 py-2 rounded-xl border transition font-semibold",
+                    active
+                      ? "bg-sky-700 text-white border-sky-700"
+                      : "bg-white text-slate-800 border-slate-300 hover:bg-slate-50",
+                  ].join(" ")}
+                >
+                  {v.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <p className="text-2xl font-semibold text-sky-700">{displayPrice}</p>
         <p className="text-sm text-slate-500">⭐ 4.8/5 từ khách hàng</p>
       </div>
 
       {/* 📊 Thông số kỹ thuật */}
-      {car.specs && (
+      {mergedSpecs && (
         <div className="animate-scrollFade">
           <h2 className="text-2xl font-bold mb-4">Thông số kỹ thuật</h2>
           <table className="w-full border-collapse bg-slate-50 rounded-2xl overflow-hidden shadow-sm">
             <tbody>
-              {Object.entries(car.specs).map(([label, value]) => (
+              {Object.entries(mergedSpecs).map(([label, value]) => (
                 <tr
                   key={label}
                   className="border-b border-slate-200 hover:bg-white transition"
@@ -146,9 +229,12 @@ export default function ProductDetail() {
           </table>
         </div>
       )}
+
       <PromotionBox modelName={car.name} />
       <Form />
+
       {/* Reviews */}
+      {/* ... phần reviews và nút quay lại giữ nguyên */}
       <div className="space-y-4 animate-scrollFade">
         <h2 className="text-2xl font-bold">Đánh giá từ khách hàng</h2>
         {reviews.map((r, i) => (
@@ -164,7 +250,6 @@ export default function ProductDetail() {
         ))}
       </div>
 
-      {/* Nút quay lại */}
       <div className="pt-6">
         <Link
           to="/"

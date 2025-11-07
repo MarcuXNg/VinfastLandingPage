@@ -1,10 +1,26 @@
+// cars.js
+import vf6Eco from "../assets/vf6/vf6_1.jpg";
+import vf6Plus from "../assets/vf6//vf6_2.jpg";
+import vf7Eco from "../assets/vf7/vf7_1.jpg";
+import vf7Plus from "../assets/vf7/vf7_2.jpg";
+import vf8Eco from "../assets/vf8/vf8_1.jpg";
+import vf8Plus from "../assets/vf8/vf8_2.jpg";
+import vf9Eco from "../assets/vf9/vf9_1.jpg";
+import vf9Plus from "../assets/vf9/vf9_2.jpg";
+
+// (các ảnh “gốc” nếu cũng để assets)
+import vf6Default from "../assets/vf6/ModelVF6.svg";
+import vf7Default from "../assets/vf7/ModelVF7.svg";
+import vf8Default from "../assets/vf8/ModelVF8.svg";
+import vf9Default from "../assets/vf9/ModelVF9.svg";
+
 export const cars = [
   {
     id: "vf3",
     name: "VinFast VF 3",
     blurb:
       "Mẫu mini SUV điện hoàn toàn mới, nhỏ gọn cho đô thị, thiết kế trẻ trung và cá tính.",
-    price: "Dự kiến: 240 triệu đồng",
+    price: "287.040.000 đồng",
     img: "/ModelVF3.svg",
     product_img: "/vf3.jpg",
     title: "VF 3 – Nhỏ gọn, linh hoạt, năng lượng xanh",
@@ -28,7 +44,7 @@ export const cars = [
     name: "VinFast VF 5",
     blurb:
       "Xe điện phân khúc A với thiết kế hiện đại, phong cách năng động, hướng tới người trẻ.",
-    price: "Giá niêm yết: 458 triệu đồng",
+    price: "507.840.000 đồng",
     img: "/ModelVF5.svg",
     product_img: "/vf5.jpg",
     title: "VF 5 – Phong cách và tiện nghi",
@@ -52,8 +68,8 @@ export const cars = [
     name: "VinFast VF 6",
     blurb:
       "SUV điện cỡ B, thiết kế bởi Torino Design, phù hợp di chuyển linh hoạt trong đô thị.",
-    price: "Giá dự kiến: 675 triệu đồng",
-    img: "/ModelVF6.svg",
+    price: "661.440.000 đồng", // fallback khi không chọn biến thể
+    img: vf6Default,
     product_img: "/vf6.jpg",
     title: "VF 6 – SUV điện tầm trung, mạnh mẽ và thông minh",
     desc: "Công nghệ tiên tiến, thiết kế tinh tế, tối ưu cho đô thị hiện đại.",
@@ -70,14 +86,38 @@ export const cars = [
       "Khoảng sáng gầm xe (mm)": "170",
       "Dung lượng pin (kWh)": "59,6",
     },
+    variants: {
+      eco: {
+        label: "VinFast Eco",
+        price: "661.440.000 đồng",
+        product_img: vf6Eco,
+        specs: {
+          "Công suất tối đa (kW)": "100",
+          "Mô men xoắn cực đại (Nm)": "135",
+          "Dẫn động": "FWD / Cầu trước",
+        },
+      },
+      plus: {
+        label: "VinFast Plus",
+        price: "719.040.000 đồng",
+        product_img: vf6Plus,
+        specs: {
+          "Công suất tối đa (kW)": "120",
+          "Mô men xoắn cực đại (Nm)": "180",
+          "Dẫn động": "FWD / Cầu trước",
+        },
+      },
+    },
   },
+
+  // VF7
   {
     id: "vf7",
     name: "VinFast VF 7",
     blurb:
       "SUV điện hạng C, phong cách thể thao, nhiều công nghệ hỗ trợ lái thông minh.",
-    price: "Giá dự kiến: 850 triệu đồng",
-    img: "/ModelVF7.svg",
+    price: "767.040.000 đồng",
+    img: vf7Default,
     product_img: "/vf7.jpg",
     title: "VF 7 – Cá tính, thể thao và đẳng cấp",
     desc: "Trải nghiệm lái phấn khích với thiết kế đậm chất tương lai.",
@@ -94,14 +134,40 @@ export const cars = [
       "Khoảng sáng gầm xe (mm)": "190",
       "Dung lượng pin (kWh)": "75,3",
     },
+    variants: {
+      eco: {
+        label: "VinFast Eco",
+        price: "767.040.000 đồng",
+        product_img: vf7Eco,
+        specs: {
+          "Động cơ": "01 Motor điện",
+          "Dẫn động": "FWD",
+          "Công suất tối đa (kW)": "150",
+          "Mô men xoắn cực đại (Nm)": "310",
+        },
+      },
+      plus: {
+        label: "VinFast Plus",
+        price: "911.040.000 đồng",
+        product_img: vf7Plus,
+        specs: {
+          "Động cơ": "Dual Motor",
+          "Dẫn động": "AWD",
+          "Công suất tối đa (kW)": "260",
+          "Mô men xoắn cực đại (Nm)": "500",
+        },
+      },
+    },
   },
+
+  // VF8
   {
     id: "vf8",
     name: "VinFast VF 8",
     blurb:
       "SUV điện cỡ D – 5 chỗ ngồi, trang bị hệ thống hỗ trợ lái nâng cao và công nghệ thông minh VF Connect.",
-    price: "Giá niêm yết: 1,090 tỷ đồng",
-    img: "/ModelVF8.svg",
+    price: "978.240.000 đồng",
+    img: vf8Default,
     product_img: "/vf8.jpg",
     title: "VF 8 – SUV điện sang trọng và thông minh",
     desc: "Hiệu suất mạnh mẽ, công nghệ tiên tiến, tiện nghi toàn diện.",
@@ -118,14 +184,37 @@ export const cars = [
       "Khoảng sáng gầm xe (mm)": "179",
       "Dung lượng pin (kWh)": "82",
     },
+    variants: {
+      eco: {
+        label: "VinFast Eco",
+        price: "978.240.000 đồng",
+        product_img: vf8Eco,
+        specs: {
+          "Động cơ": "02 Motor điện",
+          "Dẫn động": "AWD",
+          "Công suất tối đa (kW)": "260",
+          "Mô men xoắn cực đại (Nm)": "500",
+        },
+      },
+      plus: {
+        label: vf8Plus,
+        price: "1.151.040.000 đồng",
+        product_img: "/vf8-plus.jpg",
+        specs: {
+          // Nếu Plus mạnh hơn/khác option, điền vào đây
+        },
+      },
+    },
   },
+
+  // VF9
   {
     id: "vf9",
     name: "VinFast VF 9",
     blurb:
       "SUV điện cỡ E – 7 chỗ ngồi, flagship của VinFast, nội thất sang trọng và phạm vi hoạt động lớn.",
-    price: "Giá niêm yết: 1,491 tỷ đồng",
-    img: "/ModelVF9.svg",
+    price: "1.439.040.000 đồng",
+    img: vf9Default,
     product_img: "/vf9.jpg",
     title: "VF 9 – SUV 7 chỗ đẳng cấp quốc tế",
     desc: "Không gian rộng rãi, an toàn vượt trội, phù hợp cho gia đình và doanh nghiệp.",
@@ -142,13 +231,32 @@ export const cars = [
       "Khoảng sáng gầm xe (mm)": "204",
       "Dung lượng pin (kWh)": "92",
     },
+    variants: {
+      eco: {
+        label: "VinFast Eco",
+        price: "1.439.040.000 đồng",
+        product_img: vf9Eco,
+        specs: {
+          "Động cơ": "02 Motor điện",
+          "Dẫn động": "AWD",
+        },
+      },
+      plus: {
+        label: "VinFast Plus",
+        price: "1.631.040.000 đồng",
+        product_img: vf9Plus,
+        specs: {
+          // Điền option khác biệt nếu có
+        },
+      },
+    },
   },
   {
     id: "ecvan",
     name: "VinFast ECVan",
     blurb:
       "Xe van điện linh hoạt cho chở hàng/kinh doanh, tối ưu chi phí vận hành.",
-    price: "Liên hệ",
+    price: "273.600.000 đồng",
     img: "/ModelECVAN.svg",
     product_img: "/ecvan.jpg",
     title: "ECVan – Giải pháp vận tải xanh cho doanh nghiệp",
@@ -166,7 +274,7 @@ export const cars = [
     name: "VinFast LimoGreen",
     blurb:
       "Dòng xe điện cao cấp cấu hình limousine cho doanh nhân/đón tiếp VIP.",
-    price: "Liên hệ",
+    price: "719.040.000 đồng",
     img: "/ModelLimoGreen.png",
     product_img: "/limogreen.jpg",
     title: "LimoGreen – Đẳng cấp xe điện limousine",
