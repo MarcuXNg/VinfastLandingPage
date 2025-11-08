@@ -22,8 +22,20 @@ export default function ModelsGrid() {
 
   return (
     <section className="relative w-full bg-white overflow-hidden">
-      {/* Ảnh xe (CLICKABLE) */}
-      <div className="relative h-[70vh] md:h-[60vh] flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 pt-8 text-center md:text-center">
+        <h1
+          className="
+            w-full
+            text-[40px] sm:text-[52px] md:text-[72px] lg:text-[88px]
+            font-extrabold tracking-tight text-slate-900 text-center
+          "
+        >
+          {c.name}
+        </h1>
+      </div>
+
+      {/* 2) ẢNH + điều hướng + dots */}
+      <div className="relative h-[56vh] md:h-[60vh] flex items-center justify-center">
         <Link
           to={`/product/${c.id}`}
           aria-label={`Xem chi tiết ${c.name}`}
@@ -34,19 +46,13 @@ export default function ModelsGrid() {
             alt={c.name}
             className={[
               !isSVG
-                ? "max-h-full w-auto object-contain"
-                : "h-[40vh] max-h-full w-auto object-contain scale-[1.12] md:scale-[1.18]",
-              "transition-all duration-700 cursor-pointer",
+                ? "max-h-[48vh] md:max-h-[52vh] w-auto object-contain"
+                : "h-[38vh] md:h-[44vh] w-auto object-contain scale-[1.06] md:scale-[1.1]",
             ].join(" ")}
           />
         </Link>
 
-        {/* Tiêu đề xe */}
-        <h1 className="absolute top-8 w-full text-center text-[64px] md:text-[96px] font-extrabold text-black">
-          {c.name}
-        </h1>
-
-        {/* Mũi tên điều hướng (KHÔNG nằm trong Link) */}
+        {/* Mũi tên điều hướng */}
         <button
           onClick={prevSlide}
           className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black p-2 md:p-3 rounded-full shadow-md transition"
@@ -61,9 +67,23 @@ export default function ModelsGrid() {
         >
           <ChevronRight size={28} />
         </button>
+
+        {/* Dots Indicator */}
+        <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+          {cars.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-3 h-3 rounded-full ${
+                i === current ? "bg-sky-600" : "bg-slate-300"
+              } transition`}
+              aria-label={`Chuyển đến ${cars[i].name}`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Bảng thông tin xe */}
+      {/* 3) BẢNG THÔNG TIN + CTA */}
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 border-t border-slate-200">
         <div className="grid grid-cols-2 md:grid-cols-5 text-center gap-6 md:gap-10 mb-6">
           <div>
@@ -99,7 +119,7 @@ export default function ModelsGrid() {
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-10">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-8 mb-6">
           <a
             href="#form"
             className="px-6 py-3 rounded-full bg-red-600 text-white font-semibold hover:bg-red-500 transition"
@@ -113,20 +133,6 @@ export default function ModelsGrid() {
             Xem chi tiết
           </Link>
         </div>
-      </div>
-
-      {/* Dots Indicator */}
-      <div className="absolute bottom-10 md:bottom-12 left-1/2 -translate-x-1/2 flex gap-2">
-        {cars.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full ${
-              i === current ? "bg-sky-600" : "bg-slate-300"
-            } transition`}
-            aria-label={`Chuyển đến ${cars[i].name}`}
-          />
-        ))}
       </div>
     </section>
   );

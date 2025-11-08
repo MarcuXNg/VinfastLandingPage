@@ -1,4 +1,9 @@
 // cars.js
+import vf3Img from "../assets/vf3/ModelVF3.svg";
+import vf5Img from "../assets/vf5/ModelVF5.svg";
+import vf3ProductImg from "../assets/vf3/vf3_2.jpg";
+import vf5ProductImg from "../assets/vf5/vf5_2.jpg";
+
 import vf6Eco from "../assets/vf6/vf6_1.jpg";
 import vf6Plus from "../assets/vf6//vf6_2.jpg";
 import vf7Eco from "../assets/vf7/vf7_1.jpg";
@@ -8,7 +13,6 @@ import vf8Plus from "../assets/vf8/vf8_2.jpg";
 import vf9Eco from "../assets/vf9/vf9_1.jpg";
 import vf9Plus from "../assets/vf9/vf9_2.jpg";
 
-// (các ảnh “gốc” nếu cũng để assets)
 import vf6Default from "../assets/vf6/ModelVF6.svg";
 import vf7Default from "../assets/vf7/ModelVF7.svg";
 import vf8Default from "../assets/vf8/ModelVF8.svg";
@@ -21,8 +25,8 @@ export const cars = [
     blurb:
       "Mẫu mini SUV điện hoàn toàn mới, nhỏ gọn cho đô thị, thiết kế trẻ trung và cá tính.",
     price: "287.040.000 đồng",
-    img: "/ModelVF3.svg",
-    product_img: "/vf3.jpg",
+    img: vf3Img,
+    product_img: vf3ProductImg,
     title: "VF 3 – Nhỏ gọn, linh hoạt, năng lượng xanh",
     desc: "Xe điện đô thị cỡ nhỏ, thiết kế trẻ trung, di chuyển dễ dàng trong phố.",
     specs: {
@@ -45,8 +49,8 @@ export const cars = [
     blurb:
       "Xe điện phân khúc A với thiết kế hiện đại, phong cách năng động, hướng tới người trẻ.",
     price: "507.840.000 đồng",
-    img: "/ModelVF5.svg",
-    product_img: "/vf5.jpg",
+    img: vf5Img,
+    product_img: vf5ProductImg,
     title: "VF 5 – Phong cách và tiện nghi",
     desc: "Mẫu xe điện phân khúc A hiện đại, năng động, dành cho giới trẻ.",
     specs: {
@@ -265,8 +269,10 @@ export const cars = [
       // Ghi chú: số chỗ giả định. Boss có thể đổi tùy phiên bản.
       "Số chỗ ngồi": "2",
       "Động cơ": "Motor điện",
+      "Công suất tối đa (kW)": "30",
+      "Quãng đường chạy một lần sạc đầy (km)": "150",
       "Dẫn động": "FWD",
-      "Dung lượng pin (kWh)": "—",
+      "Dung lượng pin (kWh)": "17",
     },
   },
   {
@@ -283,6 +289,8 @@ export const cars = [
       // Ghi chú: số chỗ giả định. Boss có thể đổi 6–7 theo layout.
       "Số chỗ ngồi": "6",
       "Động cơ": "Motor điện",
+      "Công suất tối đa (kW)": "80",
+      "Quãng đường chạy một lần sạc đầy (km)": "450",
       "Dẫn động": "AWD",
       "Dung lượng pin (kWh)": "—",
     },
