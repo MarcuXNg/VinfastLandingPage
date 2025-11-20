@@ -3,8 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppShell from "../AppShell";
 
 // Sections
-import PopUp from "../../components/PopUp";
-import FloatingContact from "../../components/FloatingContact";
 import Hero from "../../components/Hero";
 import ModelsGrid from "../../components/ModelsGrid";
 import BanGiaoXe from "../../components/BanGiaoXe";
@@ -28,11 +26,6 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <>
-            <PopUp />
-            <FloatingContact
-              zaloLink="https://zalo.me/0967034207"
-              phone="0967034207"
-            />
             <Hero />
             <ModelsGrid />
             <CatalogGrid />

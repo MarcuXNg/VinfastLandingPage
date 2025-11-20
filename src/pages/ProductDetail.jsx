@@ -1,28 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
-import { cars } from "../data/cars";
+// src/pages/ProductDetail.jsx
+import React, { useMemo, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { cars as baseCars } from "../data/cars.js";
+import { carDetailsMap } from "../data/index.js";
+import ContentBlocks from "../components/ContentBlocks";
 import Form from "../components/Form";
 import { Gift, CheckCircle, Phone } from "lucide-react";
+import NotFound from "../pages/NotFound.jsx";
 
-const reviews = [
-  {
-    name: "Minh Trí",
-    comment: "Xe chạy êm, tiết kiệm, nội thất đẹp.",
-    rating: 5,
-  },
-  {
-    name: "Ngọc Anh",
-    comment: "Dịch vụ bảo hành tốt, tư vấn nhiệt tình.",
-    rating: 4,
-  },
-  {
-    name: "Hoàng Phúc",
-    comment: "Thiết kế hiện đại, công nghệ thông minh.",
-    rating: 5,
-  },
-];
-
-// … bên trong file, đặt trước phần `export default function …` hoặc ngay trên chỗ dùng:
 function PromotionBox({ modelName = "VinFast" }) {
   const items = [
     "Giảm trực tiếp 4% vào giá bán xe",
@@ -88,175 +73,280 @@ function PromotionBox({ modelName = "VinFast" }) {
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const car = useMemo(() => cars.find((c) => c.id === id), [id]);
-  const variantFromURL = (searchParams.get("v") || "").toLowerCase();
+  const car = useMemo(() => {
+    const base = baseCars.find((c) => c.id === id);
+    const detail = carDetailsMap[id];
 
-  const variantKeys = useMemo(
-    () => (car?.variants ? Object.keys(car.variants) : []),
-    [car]
-  );
+    if (!base && !detail) return null;
 
-  const defaultVariantKey = useMemo(() => {
-    // Ưu tiên key trong URL nếu hợp lệ, không thì lấy key đầu tiên
-    if (variantFromURL && variantKeys.includes(variantFromURL))
-      return variantFromURL;
-    return variantKeys[0] || null;
-  }, [variantFromURL, variantKeys]);
-
-  const [selectedVariantKey, setSelectedVariantKey] =
-    useState(defaultVariantKey);
-
-  useEffect(() => {
-    // Khi đổi model id, reset variant theo URL mới
-    setSelectedVariantKey(defaultVariantKey || null);
-    // scroll top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return {
+      ...(base || {}),
+      ...(detail || {}),
+      specs: {
+        ...(base?.specs || {}),
+        ...(detail?.specs || {}),
+      },
+      // 🔥 merge thêm specsByTrim (nếu có)
+      specsByTrim: {
+        ...(base?.specsByTrim || {}),
+        ...(detail?.specsByTrim || {}),
+      },
+    };
   }, [id]);
 
+  const [activePriceTab, setActivePriceTab] = useState(null);
+
   useEffect(() => {
-    // Khi Boss đổi biến thể bằng nút, đồng bộ lại URL ?v=
-    if (!car?.variants) return;
-    const current = searchParams.get("v") || "";
-    if (selectedVariantKey && current !== selectedVariantKey) {
-      searchParams.set("v", selectedVariantKey);
-      setSearchParams(searchParams, { replace: true });
+    if (car?.priceTabs?.length) {
+      setActivePriceTab(car.priceTabs[0].id); // mặc định chọn Eco
+    } else {
+      setActivePriceTab(null);
     }
-    if (!selectedVariantKey && current) {
-      searchParams.delete("v");
-      setSearchParams(searchParams, { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedVariantKey, car]);
+  }, [car]);
 
-  if (!car)
-    return <p className="text-center mt-10">Không tìm thấy sản phẩm.</p>;
+  const displayPrice =
+    car?.priceTabs && activePriceTab
+      ? car.priceTabs.find((tab) => tab.id === activePriceTab)?.price
+      : car?.price;
 
-  const selectedVariant =
-    selectedVariantKey && car.variants
-      ? car.variants[selectedVariantKey]
-      : null;
+  // State chọn màu
+  const [colorIndex, setColorIndex] = useState(0);
+  useEffect(() => {
+    setColorIndex(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id]);
 
-  // Giá hiển thị: ưu tiên giá biến thể -> giá gốc
-  const displayPrice = selectedVariant?.price || car.price;
+  if (!car) {
+    return <NotFound />;
+  }
 
-  // Ảnh hiển thị: ưu tiên ảnh biến thể -> ảnh gốc
-  const displayImage = selectedVariant?.product_img || car.product_img;
+  const hasColors = Array.isArray(car.colors) && car.colors.length > 0;
+  const selectedColor = hasColors
+    ? car.colors[Math.min(colorIndex, car.colors.length - 1)]
+    : null;
 
-  // Specs hiển thị: merge base specs + override từ biến thể (nếu có)
-  const mergedSpecs = useMemo(() => {
-    if (!car.specs) return null;
-    if (!selectedVariant?.specs) return car.specs;
-    return { ...car.specs, ...selectedVariant.specs };
-  }, [car, selectedVariant]);
+  // HERO: luôn dùng ảnh gốc (không thay theo màu)
+  const heroImg = car.product_img || car.img;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-      {/* Hình ảnh sản phẩm */}
-      <div className="animate-fadeIn">
-        <div className="relative overflow-hidden rounded-3xl shadow-xl ring-1 ring-black/5">
-          <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-slate-100">
-            <img
-              src={displayImage}
-              alt={car.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="pointer-events-none absolute inset-0 ring-1 ring-white/10" />
+    <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* ===== HERO cố định ảnh gốc ===== */}
+      <div className="rounded-3xl overflow-hidden shadow ring-1 ring-black/5 mb-6">
+        <div className="w-full aspect-[16/9] md:aspect-[16/9] bg-slate-100">
+          <img
+            src={heroImg}
+            alt={car.name}
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
 
-      {/* Thông tin chính */}
-      <div className="space-y-3 animate-scrollFade">
-        <h1 className="text-4xl font-extrabold">
-          {car.name}
-          {selectedVariant ? (
-            <span className="ml-2 text-xl font-semibold text-slate-500">
-              · {selectedVariant.label}
-            </span>
+      {/* ===== GRID 2 CỘT ===== */}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_500px]">
+        {/* Cột trái */}
+        <main className="space-y-8 min-w-0">
+          {/* Tiêu đề + giá */}
+          <div className="space-y-3">
+            <h1 className="text-2xl md:text-3xl font-semibold">
+              {car.name || car.title}
+            </h1>
+
+            {/* Nếu có 2 giá Eco / Plus thì hiện nút chuyển */}
+            {car.priceTabs?.length ? (
+              <div className="space-y-2">
+                <div className="inline-flex rounded-full bg-slate-100 p-1">
+                  {car.priceTabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActivePriceTab(tab.id)}
+                      className={`px-3 py-1 text-sm rounded-full transition
+              ${
+                tab.id === activePriceTab
+                  ? "bg-slate-900 text-white"
+                  : "text-slate-600"
+              }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="text-2xl font-semibold text-sky-700">
+                  {displayPrice}
+                </p>
+              </div>
+            ) : (
+              // Các xe 1 giá (như VF3) vẫn dùng như cũ
+              <p className="text-2xl font-semibold text-sky-700">{car.price}</p>
+            )}
+          </div>
+          {hasColors && (
+            <section className="space-y-4">
+              {/* Preview nhỏ (ảnh theo màu) */}
+              {selectedColor?.img && (
+                <div className="mx-auto w-full max-w-[500px]">
+                  <div className="rounded-2xl overflow-hidden bg-white ring-1 ring-slate-200 shadow-sm">
+                    <div className="w-full aspect-[16/9] bg-slate-50">
+                      <img
+                        src={selectedColor.img}
+                        alt={`${car.name} - ${selectedColor.name}`}
+                        className="w-full h-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Swatches đặt dưới ảnh */}
+              <div className="mx-auto w-full max-w-[680px]">
+                <p className="text-sm font-semibold text-slate-700 mb-2 text-center">
+                  Màu sắc
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  {car.colors.map((c, idx) => {
+                    const active = idx === colorIndex;
+                    return (
+                      <button
+                        key={c.id || idx}
+                        type="button"
+                        onClick={() => setColorIndex(idx)}
+                        title={c.name}
+                        aria-label={c.name}
+                        className={[
+                          "relative h-7 w-7 rounded-full ring-1 ring-slate-300 transition",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
+                          active
+                            ? "ring-2 ring-sky-700"
+                            : "hover:ring-slate-400",
+                        ].join(" ")}
+                        style={{ backgroundColor: c.hex }}
+                      >
+                        <span className="absolute inset-0 rounded-full ring-1 ring-black/10 pointer-events-none" />
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="text-sm text-slate-600 mt-2 text-center">
+                  {selectedColor?.name || ""}
+                </div>
+              </div>
+            </section>
+          )}
+          <PromotionBox modelName={car.name} />
+          {/* Bảng thông số */}
+          {(car.specs || car.specsByTrim) && (
+            <section>
+              <h2 className="text-2xl font-bold mb-4">Thông số kỹ thuật</h2>
+
+              {car.priceTabs?.length > 1 && car.specsByTrim ? (
+                // 🔥 BẢNG SO SÁNH NHIỀU PHIÊN BẢN (Eco / Plus)
+                <div className="overflow-x-auto rounded-2xl shadow-sm ring-1 ring-slate-200">
+                  <table className="min-w-full border-collapse bg-slate-50">
+                    <thead className="bg-slate-100">
+                      <tr>
+                        <th className="py-3 px-4 text-left text-slate-700 font-semibold w-[30%]">
+                          Thông số
+                        </th>
+                        {car.priceTabs.map((tab) => (
+                          <th
+                            key={tab.id}
+                            className="py-3 px-4 text-left text-slate-700 font-semibold"
+                          >
+                            {tab.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        // gom tất cả keys từ các bản
+                        const allKeys = new Set();
+
+                        car.priceTabs.forEach((tab) => {
+                          const specsForTrim = car.specsByTrim?.[tab.id] || {};
+                          Object.keys(specsForTrim).forEach((k) =>
+                            allKeys.add(k)
+                          );
+                        });
+
+                        return Array.from(allKeys).map((key) => (
+                          <tr
+                            key={key}
+                            className="border-t border-slate-200 hover:bg-white transition"
+                          >
+                            <td className="py-3 px-4 font-medium text-slate-700 align-top">
+                              {key}
+                            </td>
+                            {car.priceTabs.map((tab) => {
+                              const value =
+                                car.specsByTrim?.[tab.id]?.[key] || "—";
+                              return (
+                                <td
+                                  key={tab.id}
+                                  className="py-3 px-4 text-slate-600 align-top"
+                                >
+                                  {value}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ));
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                // 🔹 Xe chỉ có 1 phiên bản: bảng 1 cột như cũ
+                <table className="w-full border-collapse bg-slate-50 rounded-2xl overflow-hidden shadow-sm">
+                  <tbody>
+                    {Object.entries(car.specs || {}).map(([k, v]) => (
+                      <tr
+                        key={k}
+                        className="border-b border-slate-200 hover:bg-white transition"
+                      >
+                        <td className="py-3 px-4 font-medium text-slate-700">
+                          {k}
+                        </td>
+                        <td className="py-3 px-4 text-slate-600">{v}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
+          )}
+
+          {/* Ảnh ngay sau bảng thông số (nếu có) */}
+          {car.afterSpecsImage && (
+            <div className="rounded-2xl overflow-hidden shadow ring-1 ring-black/5">
+              <img
+                src={car.afterSpecsImage}
+                alt={`${car.name} - hình ảnh sau thông số`}
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </div>
+          )}
+          {/* Bài viết theo blocks */}
+          {car.sections?.length ? (
+            <ContentBlocks sections={car.sections} />
           ) : null}
-        </h1>
-        <p className="text-lg text-slate-700">{car.blurb}</p>
+        </main>
 
-        {/* ⬇️ Nút chọn biến thể (nếu có) */}
-        {variantKeys.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-2">
-            {variantKeys.map((k) => {
-              const v = car.variants[k];
-              const active = selectedVariantKey === k;
-              return (
-                <button
-                  key={k}
-                  onClick={() => setSelectedVariantKey(k)}
-                  className={[
-                    "px-4 py-2 rounded-xl border transition font-semibold",
-                    active
-                      ? "bg-sky-700 text-white border-sky-700"
-                      : "bg-white text-slate-800 border-slate-300 hover:bg-slate-50",
-                  ].join(" ")}
-                >
-                  {v.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        <p className="text-2xl font-semibold text-sky-700">{displayPrice}</p>
-        <p className="text-sm text-slate-500">⭐ 4.8/5 từ khách hàng</p>
-      </div>
-
-      {/* 📊 Thông số kỹ thuật */}
-      {mergedSpecs && (
-        <div className="animate-scrollFade">
-          <h2 className="text-2xl font-bold mb-4">Thông số kỹ thuật</h2>
-          <table className="w-full border-collapse bg-slate-50 rounded-2xl overflow-hidden shadow-sm">
-            <tbody>
-              {Object.entries(mergedSpecs).map(([label, value]) => (
-                <tr
-                  key={label}
-                  className="border-b border-slate-200 hover:bg-white transition"
-                >
-                  <td className="py-3 px-4 font-medium text-slate-700">
-                    {label}
-                  </td>
-                  <td className="py-3 px-4 text-slate-600">{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <PromotionBox modelName={car.name} />
-      <Form />
-
-      {/* Reviews */}
-      {/* ... phần reviews và nút quay lại giữ nguyên */}
-      <div className="space-y-4 animate-scrollFade">
-        <h2 className="text-2xl font-bold">Đánh giá từ khách hàng</h2>
-        {reviews.map((r, i) => (
-          <div
-            key={i}
-            className="p-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 bg-white"
-          >
-            <p className="font-semibold text-sky-700">{r.name}</p>
-            <p className="text-sm text-slate-600 italic">
-              {r.rating}⭐ – {r.comment}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-6">
-        <Link
-          to="/"
-          className="inline-block px-5 py-2 rounded-xl bg-sky-700 text-white hover:bg-sky-600 transition"
+        {/* Cột phải: Form sticky */}
+        <aside
+          className="lg:block sticky self-start top-[84px]"
+          aria-label="Yêu cầu báo giá"
         >
-          ← Quay lại trang chủ
-        </Link>
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4 md:p-5">
+            <Form />
+          </div>
+        </aside>
       </div>
     </div>
   );

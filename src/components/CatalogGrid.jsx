@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 import { cars } from "../data/cars";
 
 /* ---- Auto load ảnh trong src/assets/<id>/<id>.(webp|png|jpg|jpeg) ---- */
-const importedImages = import.meta.glob("../assets/*/*.{webp,png,jpg,jpeg}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
+const importedImages = import.meta.glob(
+  "../assets/*/*.{webp,png,jpg,jpeg,svg}",
+  {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }
+);
 
 const imagesMap = Object.fromEntries(
   Object.entries(importedImages).map(([path, url]) => {
